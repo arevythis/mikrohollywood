@@ -5,7 +5,7 @@ body {
     background: linear-gradient(to bottom, #0a0a0a, #1c1c1c);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5); /* Shadow for depth */
     padding: 15px 0;
-    font-family: 'Caveat', cursive;
+    font-family: 'Crimson Text', serif;
     margin: 0;
     padding: 0;
     overflow: auto;
@@ -78,7 +78,7 @@ a:focus {
 .top-bar {
     position: relative;
     height: 60px;
-    font-family: 'Caveat', cursive;;
+    font-family: 'Crimson Text', serif;
     
 }
 
@@ -177,11 +177,10 @@ a:focus {
     position: sticky;
     top: 0;
     z-index: 999;
-    font-family: 'Caveat', cursive;
-
+    font-family: 'Crimson Text', serif;
 }
 .brand .brand-text {
-    font-family: 'Caveat', cursive;
+    font-family: 'Crimson Text', serif;
     font-size: 30px; /* Adjust size */
     font-weight: 700; /* Adjust weight */
     color: #ffffff; /* Add color if desired */
@@ -189,7 +188,7 @@ a:focus {
 
 
 .brand-text.hollywood {
-    font-family: 'Caveat', cursive;
+    font-family: 'Crimson Text', serif;
     font-weight: 700; /* Optional: For bold styling */
     color:#D5B981;
     font-size: 40px;
@@ -197,7 +196,7 @@ a:focus {
 
   /* Brand Text */
   .custom-navbar .brand {
-    font-family: 'Cinzel', serif;
+    font-family: 'Crimson Text', serif;
     font-size: 36px;
     font-weight: bold;
     color: #D5B981;
@@ -217,7 +216,7 @@ a:focus {
   /* Navbar Links */
   .navbar {
     padding: 10px 0;
-    font-family: 'Caveat', cursive;
+    font-family: 'Crimson Text', serif;
   }
   
   .navbar-nav {
@@ -225,7 +224,7 @@ a:focus {
     list-style: none;
     margin: 0;
     padding: 0;
-    font-family: 'Caveat', cursive;
+    font-family: 'Cinzel', serif;
   }
   
   .navbar-nav .nav-item {
@@ -233,7 +232,7 @@ a:focus {
   }
   
   .navbar-nav .nav-link {
-    font-family: 'Caveat', cursive;
+    font-family: 'Crimson Text', serif;
     font-size: 18px;
     color: #ffffff;
     text-transform: uppercase;
@@ -354,13 +353,11 @@ a:focus {
     position: relative;
     width: 100%;
     height: calc(100vh - 60px); /* Full-screen height */
-    background: #D5B981;
-       
-    background-repeat: no-repeat;
-    background-size: cover;
+    background: url(/img/bg.png) no-repeat center center / cover;
+    background-attachment: fixed; /* Optional: Parallax scrolling effect */
     overflow: hidden;
+    box-shadow: inset 0 0 0 1000px rgba(8, 8, 8, 0.5); /* Add a shadow effect */
 }
-
 .hero .hero-image-container {
     position: absolute;
     top: 5%;
@@ -426,7 +423,7 @@ a:focus {
 .hero .hero-image-container .btn {
     margin-top: 20px;
     padding: 12px 30px;
-    font-size: 16px;
+    font-size: 25px;
     font-weight: bold;
     color: #D5B981;
     border: 2px solid #D5B981;
@@ -460,7 +457,7 @@ a:focus {
     font-weight: bold;
     margin-bottom: 30px;
     line-height: 1.2; /* Improve line spacing */
-    color:#1d2434;
+    color:white;
     text-align: center;
     
 }
@@ -473,26 +470,27 @@ a:focus {
     
 }
 .hero-text .hero-button {
-    display: block; /* Makes the button behave as a block element, so it stacks below the text */
+    display: flex; /* Use flexbox for centering */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
     margin-top: 20px; /* Space between the text and the button */
     width: 100%; /* Make the button wider */
-    max-width: 400px; /* Restrict the width for larger screens */
-    padding: 15px 30px; /* Larger padding for a bigger button */
-    font-size: 18px; /* Larger text for emphasis */
+    max-width: 1200px; /* Increase the max-width to triple its size */
+    padding: 45px 90px; /* Larger padding for a bigger button */
+    font-size: 54px; /* Larger text for emphasis */
     background: linear-gradient(135deg, rgba(29, 36, 52, 0.9), rgba(45, 54, 70, 0.9)); /* Background similar to the image container */
     color: #D5B981; /* Gold text color */
-    border: 3px solid rgba(45, 54, 70, 0.9); /* Larger border */
-    border-radius: 20px; /* Rounded corners */
+    border: 9px solid rgba(45, 54, 70, 0.9); /* Larger border */
+    border-radius: 60px; /* Rounded corners */
     text-align: center; /* Center the button text */
     text-decoration: none; /* Remove underline */
     font-weight: bold; /* Bold text for emphasis */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); /* Shadow for depth */
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25); /* Shadow for depth */
     transition: all 0.3s ease; /* Smooth hover effect */
     cursor: pointer; /* Pointer cursor for interactivity */
     margin-left: auto; /* Center horizontally */
     margin-right: auto;
 }
-
 /* Hover Effect */
 .hero-text .hero-button:hover {
     background: rgba(45, 54, 70, 0.9); /* Darker shade on hover */
@@ -519,6 +517,10 @@ a:focus {
     .hero .hero-text p {
         font-size: 16px;
     }
+
+    .hero .hero-text {
+        padding: 0 20px; /* Add padding to ensure text doesn't crash with the edges */
+    }
 }
 
 @media (max-width: 767px) {
@@ -539,6 +541,10 @@ a:focus {
 
     .hero .hero-text p {
         font-size: 14px;
+    }
+
+    .hero .hero-text {
+        padding: 0 15px; /* Adjust padding for medium-sized devices */
     }
 }
 
@@ -562,6 +568,10 @@ a:focus {
         right: 0;
         height: 40%;
     }
+
+    .hero .hero-text {
+        padding: 0 10px; /* Adjust padding for smaller screens */
+    }
 }
 
 /* Extremely Small Screens - max-width 375px */
@@ -582,6 +592,10 @@ a:focus {
     .hero .hero-image-container .btn {
         padding: 6px 15px; /* Smaller button padding */
         font-size: 12px;
+    }
+
+    .hero .hero-text {
+        padding: 0 8px; /* Further adjust padding for extremely small screens */
     }
 }
 
@@ -604,7 +618,12 @@ a:focus {
         padding: 5px 12px; /* Compact button style */
         font-size: 11px;
     }
+
+    .hero .hero-text {
+        padding: 0 5px; /* Adjust padding for very small devices */
+    }
 }
+
 @media (max-width: 884px) {
     .hero .hero-image-container {
         width: 40%; /* Scale down the image container */
@@ -624,7 +643,72 @@ a:focus {
     }
 }
 
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    padding-top: 60px;
+}
 
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    max-width: 500px; /* Max width for the modal */
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.modal-body {
+    font-size: 1.2em;
+}
+
+.modal-footer {
+    margin-top: 20px;
+}
+
+.modal-footer .btn {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-footer .btn:hover {
+    background-color: #77e1fe;
+}
 
 /*******************************/
 /******* CONTACT PAGE *******/
@@ -797,7 +881,7 @@ a:focus {
     border-radius: 0;
     border: none;
     border-bottom: 1px solid #D5B981;
-    font-size: 16px;
+    font-size: 20px;
     color: #D5B981;
 }
 
@@ -809,7 +893,7 @@ a:focus {
 .contact .contact-form #appointment-date {
     display: block;
     padding: 15px 0;
-    font-size: 16px;
+    font-size: 20px;
     background: none;
     border-radius: 0;
     border: none;
@@ -819,6 +903,10 @@ a:focus {
 
 .contact .contact-form #appointment-date:focus {
     border-color: #D5B981;
+}
+.contact .contact-form #appointment-time {
+    font:bold;
+    font-size: 20px;
 }
 
 /* Submit Button Styling */

@@ -3,6 +3,8 @@ const bodyParser = require("body-parser");
 const { Pool } = require("pg");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
+const fs = require("fs");
+const path = require("path");
 require("dotenv").config();
 
 const app = express();
@@ -11,6 +13,29 @@ const port = process.env.PORT || 5000;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+
+// API Routes
+
+/** 📌 Get list of images */
+app.get("/img-list", (req, res) => {
+  const imagesDir = path.join(__dirname, 'img');
+  console.log(`Reading directory: ${imagesDir}`);
+  fs.readdir(imagesDir, (err, files) => {
+    if (err) {
+      console.error('Unable to scan directory:', err);
+      return res.status(500).send('Unable to scan directory: ' + err);
+    }
+    const images = files.filter(file => /\.(jpg|jpeg|png|gif)$/i.test(file));
+    console.log('Images found:', images);
+    res.json(images);
+  });
+});
+
+// Serve static files from the "public" directory
+app.use(express.static('public'));
+
+// Serve static files from the "img" directory
+app.use('/img', express.static('img'));
 
 // PostgreSQL Connection
 const pool = new Pool({
@@ -73,8 +98,6 @@ const sendAdminEmail = async (name, phone, appointmentDate, appointmentTime, use
     console.error("❌ Error sending admin notification email:", error);
   }
 };
-
-// API Routes
 
 /** 📌 Book an appointment */
 app.post("/appointments", async (req, res) => {

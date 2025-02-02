@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: #77e1fe 3px solid;
+        }
+        header a {
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 16px;
+        }
+        header ul {
+            padding: 0;
+            list-style: none;
+            float: right;
+            margin-top: 10px;
+        }
+        header li {
+            display: inline;
+            padding: 0 20px 0 20px;
+        }
+        .main-content {
+            background: #fff;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="file"],
+        input[type="text"],
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #333;
+            color: #fff;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #77e1fe;
+        }
+        .photo-gallery {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .photo-gallery img {
+            width: 100px;
+            height: 100px;
+            margin: 5px;
+            cursor: pointer;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+        }
+        .photo-gallery img:hover {
+            border-color: #77e1fe;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Admin Dashboard</h1>
+            <ul>
+                <li><a href="/admin/logout">Αποσύνδεση</a></li>
+            </ul>
+        </div>
+    </header>
+    <div class="container main-content">
+        <h2>ΔΙΑΧΕΙΡΗΣΗ ΓΚΑΛΕΡΙ</h2>
+        <form action="/admin/add_photo" method="post" enctype="multipart/form-data">
+            <input type="file" name="photo" required>
+            <button type="submit">Πρόσθεσε Φώτο</button>
+        </form>
+
+        <h2>ΦΩΤΟ ΓΚΑΛΕΡΙ</h2>
+        <div class="photo-gallery" id="photo-gallery">
+            <!-- Photo thumbnails will be dynamically inserted here -->
+        </div>
+
+        <h2>Διαχείρηση Ραντεβού</h2>
+        <table class="appointment-table" id="appointment-table">
+            <thead>
+                <tr>
+                    <th>Appointment ID</th>
+                    <th>Ημερομηνία</th>
+                    <th>Ώρα</th>
+                    <th>Διαγραφή</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Appointment rows will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Fetch and display photos
+        fetch('/admin/photos')
+            .then(response => response.json())
+            .then(photos => {
+                const photoGallery = document.getElementById('photo-gallery');
+                photos.forEach(photo => {
+                    const img = document.createElement('img');
+                    img.src = `/img/${photo.name}`;
+                    img.alt = photo.name;
+                    img.dataset.id = photo.id;
+                    img.addEventListener('click', () => {
+                        if (confirm(`Θες σίγουρα να διαγράψεις την ${photo.name}?`)) {
+                            fetch('/admin/delete_photo', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ photo_id: photo.id })
+                            }).then(() => {
+                                // Remove the photo from the gallery
+                                img.remove();
+                            }).catch(error => console.error('Error deleting photo:', error));
+                        }
+                    });
+                    photoGallery.appendChild(img);
+                });
+            }).catch(error => console.error('Error fetching photos:', error));
+
+        // Fetch and display appointments
+        fetch('/admin/appointments')
+            .then(response => response.json())
+            .then(appointments => {
+                const appointmentTable = document.getElementById('appointment-table').querySelector('tbody');
+                appointments.forEach(appointment => {
+                    const tr = document.createElement('tr');
+                    const tdId = document.createElement('td');
+                    tdId.textContent = appointment.id;
+                    const tdDate = document.createElement('td');
+                    tdDate.textContent = appointment.appointment_date;
+                    const tdTime = document.createElement('td');
+                    tdTime.textContent = appointment.appointment_time;
+                    const tdAction = document.createElement('td');
+                    const button = document.createElement('button');
+                    button.textContent = 'Αποδέσμευσε Ραντεβού';
+                    button.addEventListener('click', () => {
+                        if (confirm(`Είσαι σίγουρος ότι θέλεις να ελευθερώσεις το ραντεβού ${appointment.id}?`)) {
+                            fetch('/admin/free_appointment_slot', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ appointment_id: appointment.id })
+                            }).then(() => {
+                                // Remove the appointment from the table
+                                tr.remove();
+                            }).catch(error => console.error('Error freeing appointment slot:', error));
+                        }
+                    });
+                    tdAction.appendChild(button);
+                    tr.appendChild(tdId);
+                    tr.appendChild(tdDate);
+                    tr.appendChild(tdTime);
+                    tr.appendChild(tdAction);
+                    appointmentTable.appendChild(tr);
+                });
+            }).catch(error => console.error('Error fetching appointments:', error));
+    </script>
+</body>
+</html>
