@@ -156,7 +156,67 @@ a:focus {
         padding: 0 60px;
     }
 }
+@media (max-width: 575.98px) {
+    .top-bar {
+        padding: 0 20px;
+    }
+    .top-bar .text h2 {
+        font-size: 16px;
+    }
+    .top-bar .text p {
+        font-size: 14px;
+    }
+    .top-bar .social a {
+        width: 40px;
+    }
+}
 
+@media (max-width: 575.98px) {
+    .top-bar {
+        padding: 0 10px;
+    }
+    .top-bar .text h2 {
+        font-size: 14px;
+    }
+    .top-bar .text p {
+        font-size: 12px;
+    }
+    .top-bar .social a {
+        width: 40px;
+    }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .top-bar {
+        padding: 0 20px;
+    }
+    .top-bar .text h2 {
+        font-size: 16px;
+    }
+    .top-bar .text p {
+        font-size: 14px;
+    }
+    .top-bar .social a {
+        width: 50px;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .top-bar {
+        padding: 0 30px;
+    }
+    .top-bar .text h2 {
+        font-size: 18px;
+    }
+    .top-bar .text p {
+        font-size: 16px;
+    }
+    .top-bar .social a {
+        width: 60px;
+    }
+}
 
 /**********************************/
 /*********** Nav Bar CSS **********/
@@ -345,6 +405,78 @@ a:focus {
         background-color: #D5B981; /* Slightly different hover color */
     }
 }
+@media (max-width: 575.98px) {
+  
+    .custom-navbar .navbar-collapse {
+        display: flex; /* Ensure it is a flex container */
+        flex-direction: column;
+        align-items: flex-end;
+        width: 100%; /* Ensure full-width collapse */
+        max-height: 0; /* Initially collapsed */
+        overflow: hidden; /* Hide overflow */
+        transition: 0.5s ease-in-out, padding 0.5s ease-in-out; /* Smooth transition for both opening and closing */
+      
+    }
+    .custom-navbar .navbar-collapse.show {
+        max-height: 1000px; /* Expanded height */
+    }
+
+    .custom-navbar .navbar-nav {
+        flex-direction: column; /* Display items vertically */
+        width: 100%;
+        padding-left: 0;
+    }
+
+    .custom-navbar .navbar-nav .nav-item {
+        margin: 8px 0; /* Margin between items vertically */
+    }
+
+    .custom-navbar .navbar-toggler {
+        border: 2px solid #D5B981;
+        background-color: transparent;
+        position: absolute;
+        right: 15px; /* Push it to the right side */
+        transform: translateY(-50%);
+        z-index: 10;
+        
+    }
+
+    .custom-navbar .navbar-toggler-icon {
+        display: block;
+        width: 20px; /* Length of the lines */
+        height: 2px; /* Thickness of the lines */
+        background-color: #D5B981; /* Line color */
+        margin: 6px 0; /* Spacing between lines */
+      
+    }
+
+    .custom-navbar .navbar-toggler:hover .navbar-toggler-icon {
+        background-color: #D5B981; /* Slightly different hover color */
+    }
+    
+    /* Adjust the brand */
+    .custom-navbar .navbar-brand {
+        display: flex;
+        align-items: center;
+        font-size: 0.8em; /* Make the brand text smaller */
+        margin-right: auto; /* Align to the left */
+    }
+
+    .custom-navbar .navbar-brand .star-logo {
+        height: 30px; /* Make the logo smaller */
+        width: auto;
+        margin-right: 10px; /* Adjust spacing */
+    }
+
+    .custom-navbar .brand-text {
+        font-size: 24px; /* Adjust brand text size */
+    }
+
+    .custom-navbar .brand-text.hollywood {
+        font-size: 28px; /* Adjust brand text size */
+    }
+
+}
 
 /*******************************/
 /********** Hero CSS ***********/
@@ -525,10 +657,10 @@ a:focus {
 
 @media (max-width: 767px) {
     .hero .hero-image-container {
-        width: 50%; /* Slightly narrower for medium-sized devices */
-        top: 0;
-        right: 0;
-        height: 40%;
+        width: 40%; /* Adjusted width for smaller screens */
+        top: 20%;
+        right: 10%;
+        height: 20%;
     }
 
     .hero .hero-image-container .album img {
@@ -550,7 +682,7 @@ a:focus {
 
 @media (max-width: 575px) {
     .hero .hero-text h1 {
-        font-size: 25px;
+        font-size: 30px;
     }
 
     .hero .hero-text p {
@@ -558,69 +690,54 @@ a:focus {
     }
 
     .hero .hero-image-container .btn {
-        padding: 8px 18px;
-        font-size: 14px;
+        padding: 4px 8px; /* Adjust padding to make the button smaller */
+        font-size: 12px; /* Adjust font size to make the button smaller */
+        width: auto; /* Allow the button to be as wide as its content */
+        max-width: 80%; /* Ensure the button does not take more than 80% of the container width */
+        border: 1px solid #D5B981; /* Adjust border size */
+        white-space: nowrap; /* Prevent the text from wrapping */
+        display: inline-block; /* Ensure the button is inline */
+        text-align: center; /* Center the text inside the button */
+
+        /* Hide the original text and display "Γκαλερί" */
+        position: relative; /* Ensure the pseudo-element is positioned relative to the button */
+        color: transparent; /* Hide the original text */
     }
 
-    .hero .hero-image-container {
-        width: 40%; /* Adjusted width for smaller screens */
-        top: 0;
-        right: 0;
-        height: 40%;
+    .hero .hero-image-container .btn::after {
+        content: 'Γκαλερί'; /* Display "Γκαλερί" */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #D5B981; /* Use the button's original color */
+        white-space: nowrap; /* Prevent the text from wrapping */
     }
+
 
     .hero .hero-text {
         padding: 0 10px; /* Adjust padding for smaller screens */
     }
-}
 
-/* Extremely Small Screens - max-width 375px */
-@media (max-width: 375px) {
-    .hero .hero-text h1 {
-        font-size: 20px; /* Smaller font size for limited screen width */
-    }
-
-    .hero .hero-text p {
-        font-size: 11px;
-    }
-
+    /* Make the image container smaller */
     .hero .hero-image-container {
-        width: 60%; /* Use more of the screen width */
-        height: 35%; /* Shorter for a compact look */
+        width: 100%; /* Adjust width for smaller screens */
+        top: 10%;
+        right: 10%;
+        height: auto; /* Allow the height to adjust dynamically */
     }
 
-    .hero .hero-image-container .btn {
-        padding: 6px 15px; /* Smaller button padding */
-        font-size: 12px;
+    .hero .hero-image-container .album img {
+        width: 30%; /* Adjust the image size within the container */
     }
 
-    .hero .hero-text {
-        padding: 0 8px; /* Further adjust padding for extremely small screens */
-    }
-}
-
-/* Very Small Devices - max-width 320px */
-@media (max-width: 320px) {
-    .hero .hero-text h1 {
-        font-size: 18px; /* Smaller headline font for narrow devices */
-    }
-
-    .hero .hero-text p {
-        font-size: 10px;
-    }
-
-    .hero .hero-image-container {
-        width: 70%; /* Occupy more of the screen width */
-        height: 30%; /* Shortened further for tight spacing */
-    }
-
-    .hero .hero-image-container .btn {
-        padding: 5px 12px; /* Compact button style */
-        font-size: 11px;
-    }
-
-    .hero .hero-text {
-        padding: 0 5px; /* Adjust padding for very small devices */
+    /* Make the hero button smaller */
+    .hero-text .hero-button {
+        width: 100%; /* Adjust width for smaller screens */
+        max-width: 200px; /* Limit the maximum width */
+        padding: 10px 20px; /* Adjust padding for smaller screens */
+        font-size: 23px; /* Adjust font size for smaller screens */
+        margin-top: 10px; /* Adjust margin for spacing */
     }
 }
 
@@ -969,23 +1086,49 @@ a:focus {
     }
 }
 
-/* For very small devices (phones) */
 @media (max-width: 576px) {
+  
+  
     .contact .container-fluid {
-        background-size: 90% auto; /* Make the background image even smaller */
+        background: url(/img/index.png) center center no-repeat;
+        background-size: cover; /* Cover the entire screen */
         padding: 15px;
     }
+ 
+
 
     .contact .contact-form {
         padding: 30px 15px;
+        background: rgba(29, 36, 52, 0.9); /* Darker semi-transparent overlay for readability */
+        border-radius: 8px; /* Slightly rounded corners */
+    }
+
+    .contact .contact-form input,
+    .contact .contact-form textarea {
+        font-size: 14px; /* Adjust font size for smaller screens */
+        margin-bottom: 15px; /* Space between form fields */
+        color: #FFFFFF; /* Make the input text color more visible on mobile */
+    }
+
+    .contact .contact-form input::placeholder,
+    .contact .contact-form textarea::placeholder {
+        color: #c2c2c2; /* Make the placeholder text color white on mobile */
+    }
+
+    .contact .contact-form label {
+        color: #D5B981; /* Make the label text color visible on mobile */
+    }
+
+    .contact .contact-form h3 {
+        color: #D5B981; /* Ensure the heading color is visible on mobile */
     }
 
     .contact .contact-form .btn {
         padding: 10px 20px;
         font-size: 12px;
     }
-}
 
+}
 
 /*******************************/
 /******* Single Page CSS *******/
@@ -1196,5 +1339,75 @@ a:focus {
         height: 200px;
         width: 100%; /* Ensure it spans full width in tablet view */
         margin-top: 15px;
+    }
+}
+/* For very small devices (phones) */
+@media (max-width: 576px) {
+    .footer {
+        text-align: left; /* Ensure text aligns well on mobile */
+        padding-top: 45px; /* Reduce padding for smaller screens */
+    }
+
+    .footer .footer-contact,
+    .footer .footer-link,
+    .footer .footer-newsletter {
+        margin-bottom: 30px; /* Reduce margin for smaller screens */
+    }
+
+    .footer .footer-contact h2,
+    .footer .footer-link h2,
+    .footer .footer-newsletter h2 {
+        font-size: 18px; /* Smaller font size for headings */
+    }
+
+    .footer .footer-contact p,
+    .footer .footer-link a {
+        font-size: 14px; /* Smaller font size for text */
+    }
+
+    .footer .footer-social {
+        text-align: center;
+        margin-top: 20px; /* Provide some spacing */
+    }
+
+    .footer .footer-social a i {
+        margin-right: 10px;
+        font-size: 16px; /* Slightly smaller icons */
+    }
+
+    .footer .footer-map {
+        height: 100px; /* Smaller map height */
+        width: 100%; /* Full width for the map */
+        margin-top: 15px; /* Adjust margin as needed */
+    }
+
+    .footer .footer-contact,
+    .footer .footer-link,
+    .footer .footer-newsletter {
+        width: 100%; /* Full width for sections */
+        float: none; /* Reset float */
+    }
+
+    .footer .footer-contact h2,
+    .footer .footer-contact p {
+        font-size: 14px; /* Slightly smaller for mobile */
+    }
+
+    .footer .footer-newsletter .btn {
+        font-size: 14px; /* Adjust button font size */
+        padding: 10px 20px; /* Adjust button padding */
+    }
+
+    .footer .copyright .row {
+        text-align: center; /* Center align text */
+        padding: 10px 0; /* Adjust padding */
+    }
+
+    .footer .copyright .col-md-6:last-child p {
+        text-align: center; /* Center align text */
+    }
+
+    .footer .copyright p {
+        font-size: 14px; /* Smaller font size */
     }
 }

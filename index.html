@@ -18,7 +18,7 @@
     <!-- CSS Libraries -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="animate/animate.min.css" rel="stylesheet">
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
     <link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet">
@@ -119,60 +119,72 @@
         </div>
     </div>
 
-    <!-- Contact Start -->
-    <div class="contact" id="contact">
-        <div class="container-fluid">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-4"></div>
-                    <div class="col-md-8">
-                        <div class="contact-form">
-                            <h3>Κλείσε Ραντεβού!</h3>
-                            <form id="bookingForm">
-                                <div class="control-group">
-                                    <label for="name">Το όνομά σας:</label>
-                                    <input type="text" class="form-control" id="name" placeholder="Ονοματεπώνυμο" required />
-                                </div>
+  <!-- Contact Start -->
+<div class="contact" id="contact">
+    <div class="container-fluid">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-4"></div>
+                <div class="col-md-8">
+                    <div class="contact-form">
+                        <h3>Κλείσε Ραντεβού!</h3>
+                        <form id="bookingForm">
+                            <div class="control-group">
+                                <label for="name">Το όνομά σας:</label>
+                                <input type="text" class="form-control" id="name" placeholder="Ονοματεπώνυμο" required />
+                            </div>
 
-                                <div class="control-group">
-                                    <label for="phone">Ο αριθμός τηλεφώνου σας:</label>
-                                    <input type="tel" class="form-control" id="phone" placeholder="Τηλέφωνο επικοινωνίας" required />
-                                </div>
+                            <div class="control-group">
+                                <label for="phone">Ο αριθμός τηλεφώνου σας:</label>
+                                <input type="tel" class="form-control" id="phone" placeholder="Τηλέφωνο επικοινωνίας" required />
+                            </div>
 
-                                <div class="control-group">
-                                    <label for="email">Το email σας:</label>
-                                    <input type="email" class="form-control" id="email" placeholder="Ηλεκτρονική διεύθυνση" required />
-                                </div>
+                            <div class="control-group">
+                                <label for="email">Το email σας:</label>
+                                <input type="email" class="form-control" id="email" placeholder="Ηλεκτρονική διεύθυνση" required />
+                            </div>
 
-                                <div class="control-group">
-                                    <label for="appointment-date">Επιλέξτε ημερομηνία:</label>
-                                    <input type="text" class="form-control" id="appointment-date" required />
-                                </div>
+                            <div class="control-group">
+                                <label for="appointment-date">Επιλέξτε ημερομηνία:</label>
+                                <input type="text" class="form-control" id="appointment-date" placeholder="Πατήστε για να επιλέξετε μέρα" required />
+                            </div>
 
-                                <div class="control-group">
-                                    <label for="appointment-time">Επιλέξτε ώρα:</label>
-                                    <select class="form-control" id="appointment-time" required>
-                                        <!-- Time slots will be populated here -->
-                                    </select>
-                                </div>
+                            <div class="control-group">
+                                <label for="appointment-time">Επιλέξτε ώρα:</label>
+                                <select class="form-control" id="appointment-time" required>
+                                    <!-- Time slots will be populated here -->
+                                </select>
+                            </div>
 
-                                <div>
-                                    <button class="btn" type="submit">Κάνε Κράτηση</button>
-                                </div>
-                            </form>
-                        </div>
+                            <div>
+                                <button class="btn" type="submit">Κάνε Κράτηση</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+<!-- Contact End -->
 
-    <!-- Contact End -->
-
-    <!-- Modal -->
-    <div id="appointmentModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
+  <!-- Modal -->
+<div id="appointmentModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <!-- Confirmation Modal Content -->
+        <div id="confirmationContent">
+            <div class="modal-header">Επιβεβαίωση Ραντεβού</div>
+            <div class="modal-body">
+                Είστε σίγουροι ότι θέλετε να καταχωρηθεί αυτό το ραντεβού;
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="confirmYesBtn">Ναι</button>
+                <button class="btn" id="confirmNoBtn">Όχι</button>
+            </div>
+        </div>
+        <!-- Success Modal Content -->
+        <div id="successContent" style="display: none;">
             <div class="modal-header">Επιβεβαίωση Ραντεβού</div>
             <div class="modal-body">
                 Το ραντεβού σας έχει καταχωρηθεί επιτυχώς! Θα λάβετε επιβεβαίωση μέσω email.
@@ -182,6 +194,7 @@
             </div>
         </div>
     </div>
+</div>
 
     <!-- Footer -->
     <div class="footer">
@@ -235,7 +248,7 @@
     <script src="lib/lightbox/js/lightbox.min.js"></script>
 
     <!-- Contact Javascript File -->
-    <script src="mail/jqBootstrapValidation.min.js"></script>
+    <script src="/jqBootstrapValidation.min.js"></script>
     <script src="mail/contact.js"></script>
 
     <!-- Template Javascript -->
@@ -251,9 +264,9 @@
             "Τετάρτη": ["10:00", "15:00"],
             "Πέμπτη": ["12:00", "20:00"]
         };
-
+    
         const dayNamesInGreek = ["Κυριακή", "Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο"];
-
+    
         flatpickr.localize(flatpickr.l10ns.gr); // Localize to Greek
         flatpickr("#appointment-date", {
             dateFormat: "d/m/Y",
@@ -263,30 +276,30 @@
                 const selectedDate = selectedDates[0];
                 const dayOfWeek = dayNamesInGreek[selectedDate.getDay()];
                 const timeslotSelect = document.getElementById("appointment-time");
-
+    
                 timeslotSelect.innerHTML = "";
-
+    
                 if (storeHours[dayOfWeek]) {
                     let [start, end] = storeHours[dayOfWeek];
                     let startTime = new Date(selectedDate);
                     let endTime = new Date(selectedDate);
-
+    
                     startTime.setHours(start.split(":")[0], start.split(":")[1]);
                     endTime.setHours(end.split(":")[0], end.split(":")[1]);
-
+    
                     const bookedSlots = await fetchBookedSlots(formatDate(selectedDate));
-
+    
                     // Get the current time if the selected date is today
                     const now = new Date();
                     if (selectedDate.toDateString() === now.toDateString()) {
                         startTime = new Date(Math.max(startTime, now));
                         startTime.setMinutes(Math.ceil(startTime.getMinutes() / 30) * 30); // Round to the next 30 minutes
                     }
-
+    
                     for (let time = startTime; time < endTime; time.setMinutes(time.getMinutes() + 30)) {
                         const timeString = time.toTimeString().substr(0, 5);
                         const option = document.createElement("option");
-
+    
                         if (!bookedSlots.includes(timeString)) {
                             option.value = timeString;
                             option.textContent = timeString;
@@ -300,88 +313,141 @@
                 }
             }
         });
-
+    
         async function fetchBookedSlots(date) {
             const response = await fetch(`http://localhost:5000/booked-slots?date=${date}`);
             const data = await response.json();
             return data.bookedSlots || [];
         }
-
-        // Get the modal
-        var modal = document.getElementById("appointmentModal");
-
-        // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("close")[0];
-
-        // Get the close button
-        var closeBtn = document.getElementById("modalCloseBtn");
-
-        // When the user clicks on <span> (x) or the close button, close the modal
-        span.onclick = function() {
-            modal.style.display = "none";
-        }
-
-        closeBtn.onclick = function() {
-            modal.style.display = "none";
-        }
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-
-        document.getElementById("bookingForm").addEventListener("submit", async (event) => {
-            event.preventDefault();
-
-            const name = document.getElementById("name").value;
-            const phone = document.getElementById("phone").value;
-            const email = document.getElementById("email").value;
-            const appointmentDate = document.getElementById("appointment-date").value;
-            const appointmentTime = document.getElementById("appointment-time").value;
-            const userId = 1; // Assuming user_id is fixed or obtained from another logic
-
-            if (!name || !phone || !email || !appointmentDate || !appointmentTime) {
-                alert("Παρακαλώ συμπληρώστε όλα τα πεδία.");
-                return;
-            }
-
-            try {
-                const response = await fetch("http://localhost:5000/appointments", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        user_id: userId,
-                        name: name,
-                        phone: phone,
-                        email: email,
-                        appointment_date: appointmentDate,
-                        appointment_time: appointmentTime
-                    }),
-                });
-
-                if (!response.ok) {
-                    throw new Error("Η κράτηση απέτυχε.");
-                }
-
-                // Show the modal on successful booking
-                modal.style.display = "block";
-            } catch (error) {
-                console.error("Σφάλμα:", error);
-                alert("Παρουσιάστηκε σφάλμα κατά την κράτηση.");
-            }
-        });
-
+    
         function formatDate(date) {
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
             return `${year}-${month}-${day}`;
         }
-
-  
-
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get the modal elements
+            var modal = document.getElementById("appointmentModal");
+            var confirmationContent = document.getElementById("confirmationContent");
+            var successContent = document.getElementById("successContent");
+    
+            // Ensure modal element is found
+            if (!modal) {
+                console.error("Modal element not found!");
+                return;
+            }
+    
+            // Get the close elements
+            var span = document.getElementsByClassName("close")[0];
+            var closeBtn = document.getElementById("modalCloseBtn");
+    
+            // Get the confirmation buttons
+            var confirmYesBtn = document.getElementById("confirmYesBtn");
+            var confirmNoBtn = document.getElementById("confirmNoBtn");
+    
+            // Get the form
+            var bookingForm = document.getElementById("bookingForm");
+    
+            // Flag to check if the form should be submitted
+            var shouldSubmitForm = false;
+    
+            // Open the modal with confirmation content
+            function openModal() {
+                modal.style.display = "block";
+                confirmationContent.style.display = "block";
+                successContent.style.display = "none";
+            }
+    
+            // Close the modal
+            function closeModal() {
+                modal.style.display = "none";
+            }
+    
+            // Handle form submission
+            bookingForm.addEventListener("submit", function(event) {
+                event.preventDefault(); // Prevent form from submitting
+    
+                if (!shouldSubmitForm) {
+                    openModal();
+                } else {
+                    shouldSubmitForm = false;
+                    submitForm();
+                }
+            });
+    
+            // Handle 'Yes' button click
+            confirmYesBtn.addEventListener("click", function() {
+                shouldSubmitForm = true;
+                closeModal();
+                submitForm();
+            });
+    
+            // Handle 'No' button click
+            confirmNoBtn.addEventListener("click", function() {
+                closeModal();
+            });
+    
+            // Handle <span> (x) click to close the modal
+            span.onclick = function() {
+                closeModal();
+            }
+    
+            // Handle close button click
+            closeBtn.onclick = function() {
+                closeModal();
+            }
+    
+            // Close the modal if the user clicks outside the modal content
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    closeModal();
+                }
+            }
+    
+            // Function to submit the form data via AJAX
+            async function submitForm() {
+                const name = document.getElementById("name").value;
+                const phone = document.getElementById("phone").value;
+                const email = document.getElementById("email").value;
+                const appointmentDate = document.getElementById("appointment-date").value;
+                const appointmentTime = document.getElementById("appointment-time").value;
+                const userId = 1; // Assuming user_id is fixed or obtained from another logic
+    
+                if (!name || !phone || !email || !appointmentDate || !appointmentTime) {
+                    alert("Παρακαλώ συμπληρώστε όλα τα πεδία.");
+                    return;
+                }
+    
+                try {
+                    const response = await fetch("http://localhost:5000/appointments", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            user_id: userId,
+                            name: name,
+                            phone: phone,
+                            email: email,
+                            appointment_date: appointmentDate,
+                            appointment_time: appointmentTime
+                        }),
+                    });
+    
+                    if (!response.ok) {
+                        throw new Error("Η κράτηση απέτυχε.");
+                    }
+    
+                    // Show the success content
+                    confirmationContent.style.display = "none";
+                    successContent.style.display = "block";
+                    modal.style.display = "block"; // Ensure modal is open to display success content
+                } catch (error) {
+                    console.error("Σφάλμα:", error);
+                    alert("Παρουσιάστηκε σφάλμα κατά την κράτηση.");
+                }
+            }
+        });
     </script>
 </body>
 </html>
