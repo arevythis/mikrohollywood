@@ -146,7 +146,7 @@
 
                             <div class="control-group">
                                 <label for="appointment-date">Επιλέξτε ημερομηνία:</label>
-                                <input type="text" class="form-control" id="appointment-date" placeholder="Πατήστε για να επιλέξετε μέρα" required />
+                                <input type="text" class="form-control" id="appointment-date" placeholder="Πατήστε για επιλογή μέρας" required />
                             </div>
 
                             <div class="control-group">
@@ -272,6 +272,8 @@
             dateFormat: "d/m/Y",
             minDate: "today",
             maxDate: new Date().fp_incr(14),
+            placeholder: "Πατήστε για επιλογή μέρας", // Set the placeholder
+            disableMobile: true,
             onChange: async function(selectedDates, dateStr, instance) {
                 const selectedDate = selectedDates[0];
                 const dayOfWeek = dayNamesInGreek[selectedDate.getDay()];
