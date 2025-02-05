@@ -148,15 +148,22 @@ app.get('/admin/appointments', async (req, res) => {
 });
 
 // Schedule a task to delete expired appointments every hour
-cron.schedule('0 * * * *', async () => {
+cron.schedule('* * * * *', async () => {
     console.log('Running scheduled task to delete expired appointments');
     try {
         // Get current date and time
         const now = new Date();
+        const currentDate = now.toISOString().split('T')[0];
+        const currentTime = now.toTimeString().split(' ')[0];
+
+        console.log('Current date:', currentDate);
+        console.log('Current time:', currentTime);
+
         const result = await pool.query(
             "DELETE FROM appointments WHERE appointment_date < $1 OR (appointment_date = $1 AND appointment_time < $2) RETURNING *",
-            [now.toISOString().split('T')[0], now.toTimeString().split(' ')[0]]
+            [currentDate, currentTime]
         );
+
         console.log(`Deleted ${result.rowCount} expired appointments`);
     } catch (error) {
         console.error('Error deleting expired appointments:', error);

@@ -325,25 +325,13 @@ a:focus {
 /* Style for the Navbar on Small Screens (Mobile version) */
 /* Adjust Brand Layout on Mobile */
 @media (max-width: 768px) {
-    .custom-navbar .navbar-collapse {
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-end;
-        width: auto;  /* Avoid full-width collapse */
+    .navbar {
+        padding: 15px;
     }
 
-    /* Navbar items for mobile */
-    .custom-navbar .navbar-nav {
-        flex-direction: row; /* Display items inline horizontally */
-        margin-left: auto;
-        padding-left: 10px;
+    .navbar .dropdown-menu {
+        box-shadow: none;
     }
-
-    .custom-navbar .navbar-nav .nav-item {
-        margin: 0 8px; /* Margin between items */
-    }
-    
-    /* Hamburger menu, inside navbar */
     .custom-navbar .navbar-toggler {
         border: 2px solid #D5B981;
         background-color: transparent;
@@ -352,6 +340,19 @@ a:focus {
         right: 15px; /* Push it to the right side */
         transform: translateY(-50%); /* Center vertically */
         z-index: 10; /* Ensure it's clickable */
+    }
+    .custom-navbar .navbar-toggler span {
+        display: block;
+        width: 20px; /* Length of the lines */
+        height: 2px; /* Thickness of the lines */
+        background-color: #D5B981; /* Line color */
+        margin: 6px 0; /* Spacing between lines */
+   
+    }
+
+    /* Add Hover Effect */
+    .custom-navbar .navbar-toggler:hover span {
+        background-color: #D5B981; /* Slightly different hover color */
     }
 }
 
@@ -553,6 +554,7 @@ a:focus {
 
 /* Button styling */
 .hero .hero-image-container .btn {
+    
     margin-top: 20px;
     padding: 12px 30px;
     font-size: 25px;
@@ -601,36 +603,51 @@ a:focus {
     line-height: 1.5; /* Improve readability */
     
 }
-.hero-text .hero-button {
+.hero .hero-text .hero-button {
     display: flex; /* Use flexbox for centering */
     justify-content: center; /* Center horizontally */
     align-items: center; /* Center vertically */
     margin-top: 20px; /* Space between the text and the button */
     width: 100%; /* Make the button wider */
-    max-width: 1200px; /* Increase the max-width to triple its size */
-    padding: 45px 90px; /* Larger padding for a bigger button */
-    font-size: 54px; /* Larger text for emphasis */
+    max-width: 400px; /* Adjust max-width to prevent crashing at the bottom */
+    padding: 15px 30px; /* Adjust padding for a better fit */
+    font-size: 20px; /* Adjust font size */
     background: linear-gradient(135deg, rgba(29, 36, 52, 0.9), rgba(45, 54, 70, 0.9)); /* Background similar to the image container */
     color: #D5B981; /* Gold text color */
-    border: 9px solid rgba(45, 54, 70, 0.9); /* Larger border */
-    border-radius: 60px; /* Rounded corners */
+    border: 2px solid #D5B981; /* Adjust border size */
+    border-radius: 20px; /* Rounded corners */
     text-align: center; /* Center the button text */
     text-decoration: none; /* Remove underline */
     font-weight: bold; /* Bold text for emphasis */
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25); /* Shadow for depth */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); /* Shadow for depth */
     transition: all 0.3s ease; /* Smooth hover effect */
     cursor: pointer; /* Pointer cursor for interactivity */
-    margin-left: auto; /* Center horizontally */
-    margin-right: auto;
 }
+
 /* Hover Effect */
-.hero-text .hero-button:hover {
+.hero .hero-text .hero-button:hover {
     background: rgba(45, 54, 70, 0.9); /* Darker shade on hover */
     color: white; /* White text on hover */
     border-color: #D5B981; /* Gold border on hover */
 }
 
+/* Media query for larger screens */
+@media (min-width: 1200px) {
+    .hero .hero-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Center align items */
+        text-align: center;  /* Center text */
+    }
 
+    .hero .hero-text .hero-button {
+        max-width: 600px; /* Increase max-width for larger screens */
+        padding: 20px 40px; /* Increase padding for larger screens */
+        font-size: 24px; /* Increase font size for larger screens */
+    }
+  
+
+}
 
 /* Responsiveness */
 /* General Responsiveness */
@@ -655,6 +672,7 @@ a:focus {
     }
 }
 
+
 @media (max-width: 767px) {
     .hero .hero-image-container {
         width: 40%; /* Adjusted width for smaller screens */
@@ -663,10 +681,7 @@ a:focus {
         height: 20%;
     }
 
-    .hero .hero-image-container .album img {
-        width: 40%;
-    }
-
+    
     .hero .hero-text h1 {
         font-size: 30px;
     }
@@ -758,7 +773,9 @@ a:focus {
     .hero .hero-image-container {
         overflow: visible; /* Ensure elements inside aren't cropped */
     }
+    
 }
+
 
 /* Modal Styles */
 .modal {
@@ -1063,14 +1080,14 @@ a:focus {
 @media (max-width: 767px) {
     .contact .container-fluid {
         background: url(/img/index.png) left center no-repeat;
-        background-size: contain;
+        background-size: cover;
     }
 
     .contact .contact-form {
         width: 90%; /* Adjust the form to take more space on mobile */
         margin: auto; /* Center form horizontally */
         padding: 40px 20px; /* Add internal padding */
-        background: rgba(0, 0, 0, 0.6); /* Semi-transparent overlay for readability */
+        background: rgba(29, 36, 52, 0.9); /* Darker semi-transparent overlay for readability */
         border-radius: 8px; /* Slightly rounded corners */
     }
 
