@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancel Appointment</title>
+    <style>
+    /* General Body Styling */
+    body.body {
+        background: #D5B981;
+        font-family: Arial, sans-serif;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+    
+    /* Container Styling */
+    .container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+        background: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+    }
+    
+    /* Heading Styling */
+    h3 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
+    
+    /* Appointments Table Styling */
+    .appointments-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    
+    .appointments-table th, .appointments-table td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: center;
+    }
+    
+    .appointments-table th {
+        background-color: #f4f4f4;
+        color: #333;
+    }
+    
+    .appointments-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    
+    .appointments-table tr:hover {
+        background-color: #f1f1f1;
+    }
+    
+    /* Cancel Button Styling */
+    .cancel-btn {
+        background-color: #dc3545;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .cancel-btn:hover {
+        background-color: #c82333;
+    }
+    /* Cancel Button Styling */
+.cancel-btn {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.cancel-btn:hover {
+    background-color: #c82333;
+}
+
+/* Button Container Styling */
+.button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Hero Button Styling */
+.hero-btn {
+    background-color: #D5B981;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.hero-btn:hover {
+    background-color: #b89b6e;
+}
+    </style>
+</head>
+<body class="body">
+    <div class="container">
+        <h3>Ακύρωση Ραντεβού</h3>
+        <table id="appointments-table" class="appointments-table">
+            <thead>
+                <tr>
+                    <th>Ημερομηνία</th>
+                    <th>Ώρα</th>
+                    <th>Ενέργεια</th>
+                </tr>
+            </thead>
+            <tbody id="appointments"></tbody>
+        </table>
+        <div class="button-container">
+            <a href="http://127.0.0.1:3000/index.html" class="hero-btn">Επιστροφή</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('email');
+
+            if (!email) {
+                alert("Μη έγκυρο αίτημα.");
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:5000/appointments?email=${encodeURIComponent(email)}`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch appointments");
+                }
+                const appointments = await response.json();
+                const appointmentsContainer = document.getElementById("appointments");
+
+                if (appointments.length === 0) {
+                    const noAppointmentsRow = document.createElement("tr");
+                    noAppointmentsRow.innerHTML = `<td colspan="3">Δεν υπάρχουν εκκρεμή ραντεβού.</td>`;
+                    appointmentsContainer.appendChild(noAppointmentsRow);
+                    return;
+                }
+
+                appointments.forEach(appointment => {
+                    const appointmentRow = document.createElement("tr");
+                    const appointmentDate = appointment.appointment_date.split('T')[0]; // Extract the date part
+                    const appointmentTime = appointment.appointment_time;
+                    appointmentRow.innerHTML = `
+                        <td>${appointmentDate}</td>
+                        <td>${appointmentTime}</td>
+                        <td><button class="cancel-btn" data-id="${appointment.id}">Ακύρωση</button></td>
+                    `;
+                    appointmentsContainer.appendChild(appointmentRow);
+                });
+
+                document.querySelectorAll(".cancel-btn").forEach(button => {
+                    button.addEventListener("click", async function () {
+                        const id = this.dataset.id;
+                        try {
+                            const response = await fetch("http://localhost:5000/cancel-appointment", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ id }),
+                            });
+
+                            if (!response.ok) {
+                                throw new Error("Failed to cancel appointment");
+                            }
+
+                            alert("Το ραντεβού ακυρώθηκε με επιτυχία!");
+                            location.reload();
+                        } catch (error) {
+                            console.error("Error cancelling appointment:", error);
+                            alert("Παρουσιάστηκε σφάλμα κατά την ακύρωση του ραντεβού.");
+                        }
+                    });
+                });
+            } catch (error) {
+                console.error("Error fetching appointments:", error);
+                alert("Παρουσιάστηκε σφάλμα κατά την λήψη των ραντεβού.");
+            }
+        });
+    </script>
+</body>
+</html>

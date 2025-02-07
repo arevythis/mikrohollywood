@@ -1038,9 +1038,43 @@ a:focus {
 .contact .contact-form #appointment-date:focus {
     border-color: #D5B981;
 }
-.contact .contact-form #appointment-time {
-    font:bold;
+
+/* Styling for the time slots container */
+.contact .contact-form .time-slots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Styling for individual time slots */
+.contact .contact-form .time-slot {
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
     font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Available time slot */
+.contact .contact-form .time-slot.available {
+    background-color: #28a745;
+    color: #fff;
+}
+
+/* Unavailable time slot */
+.contact .contact-form .time-slot.unavailable {
+    background-color: #dc3545;
+    color: #fff;
+    cursor: not-allowed;
+}
+
+/* Active (selected) time slot */
+.contact .contact-form .time-slot.active {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    outline: 3px solid #D5B981;
 }
 
 /* Submit Button Styling */

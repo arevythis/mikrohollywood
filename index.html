@@ -121,7 +121,7 @@
         </div>
     </div>
 
-  <!-- Contact Start -->
+<!-- Contact Start -->
 <div class="contact" id="contact">
     <div class="container-fluid">
         <div class="container">
@@ -148,14 +148,14 @@
 
                             <div class="control-group">
                                 <label for="appointment-date">Επιλέξτε ημερομηνία:</label>
-                                <input type="text" class="form-control" id="appointment-date" placeholder="Πατήστε για επιλογή μέρας" required />
+                                <input type="date" class="form-control" id="appointment-date" required />
                             </div>
 
                             <div class="control-group">
                                 <label for="appointment-time">Επιλέξτε ώρα:</label>
-                                <select class="form-control" id="appointment-time" required>
+                                <div id="appointment-time" class="time-slots">
                                     <!-- Time slots will be populated here -->
-                                </select>
+                                </div>
                             </div>
 
                             <div>
@@ -168,8 +168,23 @@
         </div>
     </div>
 </div>
-<!-- Contact End -->
+  <!-- Link to open cancellation modal -->
+  <div class="container">
+    <a href="#" class="cancel-link">Ακύρωση Ραντεβού</a>
+</div>
 
+<!-- Modal for cancellation -->
+    <!-- Modal for cancellation -->
+    <div id="cancelModal" class="modal">
+        <div class="modal-content">
+            <span class="close cancel-close">&times;</span>
+            <h3>Ακύρωση Ραντεβού</h3>
+            <p>Παρακαλώ εισάγετε το email σας για να λάβετε τον σύνδεσμο ακύρωσης:</p>
+            <input type="email" id="userEmail" placeholder="Email">
+            <button id="sendCancelLink" class="hero-btn">Αποστολή Συνδέσμου</button>
+        </div>
+    </div>
+<!-- Contact End -->
   <!-- Modal -->
 <div id="appointmentModal" class="modal">
     <div class="modal-content">
@@ -258,122 +273,148 @@
     <script src="js/main.js"></script>
 
     <script>
-        const storeHours = {
-            "Παρασκευή": ["12:00", "20:00"],
-            "Σάββατο": ["10:00", "17:00"],
-            "Κυριακή": null,
-            "Δευτέρα": null,
-            "Τρίτη": ["12:00", "20:00"],
-            "Τετάρτη": ["10:00", "15:00"],
-            "Πέμπτη": ["12:00", "20:00"]
-        };
-    
-        const dayNamesInGreek = ["Κυριακή", "Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο"];
-    
-        flatpickr.localize(flatpickr.l10ns.gr); // Localize to Greek
-        flatpickr("#appointment-date", {
-            dateFormat: "d/m/Y",
-            minDate: "today",
-            maxDate: new Date().fp_incr(14),
-            placeholder: "Πατήστε για επιλογή μέρας", // Set the placeholder
-            disableMobile: true,
-            onChange: async function(selectedDates, dateStr, instance) {
-                const selectedDate = selectedDates[0];
-                const dayOfWeek = dayNamesInGreek[selectedDate.getDay()];
-                const timeslotSelect = document.getElementById("appointment-time");
-    
-                timeslotSelect.innerHTML = "";
-    
-                if (storeHours[dayOfWeek]) {
-                    let [start, end] = storeHours[dayOfWeek];
-                    let startTime = new Date(selectedDate);
-                    let endTime = new Date(selectedDate);
-    
-                    startTime.setHours(start.split(":")[0], start.split(":")[1]);
-                    endTime.setHours(end.split(":")[0], end.split(":")[1]);
-    
-                    const bookedSlots = await fetchBookedSlots(formatDate(selectedDate));
-    
-                    // Get the current time if the selected date is today
-                    const now = new Date();
-                    if (selectedDate.toDateString() === now.toDateString()) {
-                        startTime = new Date(Math.max(startTime, now));
-                        startTime.setMinutes(Math.ceil(startTime.getMinutes() / 30) * 30); // Round to the next 30 minutes
-                    }
-    
-                    for (let time = startTime; time < endTime; time.setMinutes(time.getMinutes() + 30)) {
-                        const timeString = time.toTimeString().substr(0, 5);
-                        const option = document.createElement("option");
-    
-                        if (!bookedSlots.includes(timeString)) {
-                            option.value = timeString;
-                            option.textContent = timeString;
-                            timeslotSelect.appendChild(option);
+        document.addEventListener("DOMContentLoaded", function () {
+            const storeHours = {
+                "Παρασκευή": ["12:00", "20:00"],
+                "Σάββατο": ["10:00", "17:00"],
+                "Κυριακή": null,
+                "Δευτέρα": null,
+                "Τρίτη": ["12:00", "20:00"],
+                "Τετάρτη": ["10:00", "15:00"],
+                "Πέμπτη": ["12:00", "20:00"]
+            };
+
+            const dayNamesInGreek = ["Κυριακή", "Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο"];
+
+            // Localize flatpickr to Greek
+            flatpickr.localize(flatpickr.l10ns.gr);
+            flatpickr("#appointment-date", {
+                dateFormat: "d/m/Y",
+                minDate: "today",
+                maxDate: new Date().fp_incr(14),
+                placeholder: "Πατήστε για επιλογή μέρας", // Set the placeholder
+                disableMobile: true,
+                onChange: async function (selectedDates, dateStr, instance) {
+                    const selectedDate = selectedDates[0];
+                    const dayOfWeek = dayNamesInGreek[selectedDate.getDay()];
+                    const timeSlotsContainer = document.getElementById("appointment-time");
+
+                    timeSlotsContainer.innerHTML = "";
+
+                    if (storeHours[dayOfWeek]) {
+                        let [start, end] = storeHours[dayOfWeek];
+                        let startTime = new Date(selectedDate);
+                        let endTime = new Date(selectedDate);
+
+                        startTime.setHours(start.split(":")[0], start.split(":")[1]);
+                        endTime.setHours(end.split(":")[0], end.split(":")[1]);
+
+                        const bookedSlots = await fetchBookedSlots(formatDate(selectedDate));
+
+                        // Get the current time if the selected date is today
+                        const now = new Date();
+                        if (selectedDate.toDateString() === now.toDateString()) {
+                            startTime = new Date(Math.max(startTime, now));
+                            startTime.setMinutes(Math.ceil(startTime.getMinutes() / 30) * 30); // Round to the next 30 minutes
                         }
+
+                        for (let time = startTime; time < endTime; time.setMinutes(time.getMinutes() + 30)) {
+                            const timeString = time.toTimeString().substr(0, 5);
+                            const slotElement = document.createElement("div");
+                            slotElement.classList.add("time-slot");
+
+                            if (!bookedSlots.includes(timeString)) {
+                                slotElement.classList.add("available");
+                                slotElement.textContent = timeString;
+
+                                // Add click event listener for available slots
+                                slotElement.addEventListener("click", function () {
+                                    // Remove active class from previously selected slot
+                                    const activeSlot = timeSlotsContainer.querySelector(".time-slot.active");
+                                    if (activeSlot) {
+                                        activeSlot.classList.remove("active");
+                                    }
+
+                                    // Add active class to the selected slot
+                                    slotElement.classList.add("active");
+                                });
+                            } else {
+                                slotElement.classList.add("unavailable");
+                                slotElement.textContent = timeString;
+                            }
+
+                            timeSlotsContainer.appendChild(slotElement);
+                        }
+                    } else {
+                        const slotElement = document.createElement("div");
+                        slotElement.classList.add("time-slot", "unavailable");
+                        slotElement.textContent = "Κλειστά";
+                        timeSlotsContainer.appendChild(slotElement);
                     }
-                } else {
-                    const option = document.createElement("option");
-                    option.textContent = "Κλειστά";
-                    timeslotSelect.appendChild(option);
+                }
+            });
+
+            // Helper function to format date as YYYY-MM-DD
+            function formatDate(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+
+            // Function to fetch booked slots from the server
+            async function fetchBookedSlots(date) {
+                try {
+                    const response = await fetch(`http://localhost:5000/booked-slots?date=${date}`);
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch booked slots");
+                    }
+                    const data = await response.json();
+                    return data.bookedSlots || [];
+                } catch (error) {
+                    console.error("Error fetching booked slots:", error);
+                    return [];
                 }
             }
-        });
-    
-        async function fetchBookedSlots(date) {
-            const response = await fetch(`http://localhost:5000/booked-slots?date=${date}`);
-            const data = await response.json();
-            return data.bookedSlots || [];
-        }
-    
-        function formatDate(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-        
-        document.addEventListener("DOMContentLoaded", function() {
+
             // Get the modal elements
             var modal = document.getElementById("appointmentModal");
             var confirmationContent = document.getElementById("confirmationContent");
             var successContent = document.getElementById("successContent");
-    
+
             // Ensure modal element is found
             if (!modal) {
                 console.error("Modal element not found!");
                 return;
             }
-    
+
             // Get the close elements
             var span = document.getElementsByClassName("close")[0];
             var closeBtn = document.getElementById("modalCloseBtn");
-    
+
             // Get the confirmation buttons
             var confirmYesBtn = document.getElementById("confirmYesBtn");
             var confirmNoBtn = document.getElementById("confirmNoBtn");
-    
-            // Get the form
-            var bookingForm = document.getElementById("bookingForm");
-    
+
             // Flag to check if the form should be submitted
             var shouldSubmitForm = false;
-    
+
             // Open the modal with confirmation content
             function openModal() {
                 modal.style.display = "block";
                 confirmationContent.style.display = "block";
                 successContent.style.display = "none";
             }
-    
+
             // Close the modal
             function closeModal() {
                 modal.style.display = "none";
             }
-    
+
             // Handle form submission
             bookingForm.addEventListener("submit", function(event) {
                 event.preventDefault(); // Prevent form from submitting
-    
+
                 if (!shouldSubmitForm) {
                     openModal();
                 } else {
@@ -381,50 +422,52 @@
                     submitForm();
                 }
             });
-    
+            
+
             // Handle 'Yes' button click
             confirmYesBtn.addEventListener("click", function() {
                 shouldSubmitForm = true;
                 closeModal();
                 submitForm();
             });
-    
+
             // Handle 'No' button click
             confirmNoBtn.addEventListener("click", function() {
                 closeModal();
             });
-    
+
             // Handle <span> (x) click to close the modal
             span.onclick = function() {
                 closeModal();
             }
-    
+
             // Handle close button click
             closeBtn.onclick = function() {
                 closeModal();
             }
-    
+
             // Close the modal if the user clicks outside the modal content
             window.onclick = function(event) {
                 if (event.target == modal) {
                     closeModal();
                 }
             }
-    
+
             // Function to submit the form data via AJAX
             async function submitForm() {
                 const name = document.getElementById("name").value;
                 const phone = document.getElementById("phone").value;
                 const email = document.getElementById("email").value;
                 const appointmentDate = document.getElementById("appointment-date").value;
-                const appointmentTime = document.getElementById("appointment-time").value;
+                const selectedSlot = document.querySelector(".time-slot.active");
+                const appointmentTime = selectedSlot ? selectedSlot.textContent : null;
                 const userId = 1; // Assuming user_id is fixed or obtained from another logic
-    
+
                 if (!name || !phone || !email || !appointmentDate || !appointmentTime) {
                     alert("Παρακαλώ συμπληρώστε όλα τα πεδία.");
                     return;
                 }
-    
+
                 try {
                     const response = await fetch("http://localhost:5000/appointments", {
                         method: "POST",
@@ -438,11 +481,11 @@
                             appointment_time: appointmentTime
                         }),
                     });
-    
+
                     if (!response.ok) {
                         throw new Error("Η κράτηση απέτυχε.");
                     }
-    
+
                     // Show the success content
                     confirmationContent.style.display = "none";
                     successContent.style.display = "block";
@@ -452,6 +495,53 @@
                     alert("Παρουσιάστηκε σφάλμα κατά την κράτηση.");
                 }
             }
+
+            // Code for the cancellation modal
+            var cancelModal = document.getElementById("cancelModal");
+            var cancelCloseButton = document.querySelector(".cancel-close");
+            var sendLinkBtn = document.getElementById("sendCancelLink");
+
+            // Open cancel modal
+            document.querySelector(".cancel-link").addEventListener("click", function(event) {
+                event.preventDefault();
+                cancelModal.style.display = "block";
+            });
+
+            // Close cancel modal
+            cancelCloseButton.addEventListener("click", function() {
+                cancelModal.style.display = "none";
+            });
+
+            // Close modal if the user clicks outside the modal content
+            window.addEventListener("click", function(event) {
+                if (event.target == cancelModal) {
+                    cancelModal.style.display = "none";
+                }
+            });
+
+            // Send cancel link
+            sendLinkBtn.addEventListener("click", async function() {
+                const email = document.getElementById("userEmail").value;
+                if (!email) {
+                    alert("Παρακαλώ εισάγετε το email σας.");
+                    return;
+                }
+                try {
+                    const response = await fetch("http://localhost:5000/send-cancel-link", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email }),
+                    });
+                    if (!response.ok) {
+                        throw new Error("Failed to send cancel link.");
+                    }
+                    alert("Ο σύνδεσμος ακύρωσης στάλθηκε στο email σας.");
+                    cancelModal.style.display = "none";
+                } catch (error) {
+                    console.error("Error sending cancel link:", error);
+                    alert("Παρουσιάστηκε σφάλμα κατά την αποστολή του συνδέσμου ακύρωσης.");
+                }
+            });
         });
     </script>
 </body>
