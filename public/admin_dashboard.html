@@ -117,7 +117,7 @@
 
         <h2>ΦΩΤΟ ΓΚΑΛΕΡΙ</h2>
         <div class="photo-gallery" id="photo-gallery">
-            <!-- Photo thumbnails will be dynamically inserted here -->
+          
         </div>
 
         <h2>Διαχείρηση Ραντεβού</h2>
@@ -131,13 +131,13 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Appointment rows will be dynamically inserted here -->
+               
             </tbody>
         </table>
     </div>
 
     <script>
-        // Fetch and display photos
+      
         fetch('/admin/photos')
             .then(response => response.json())
             .then(photos => {
@@ -156,7 +156,7 @@
                                 },
                                 body: JSON.stringify({ photo_id: photo.id })
                             }).then(() => {
-                                // Remove the photo from the gallery
+                             
                                 img.remove();
                             }).catch(error => console.error('Error deleting photo:', error));
                         }
@@ -165,7 +165,7 @@
                 });
             }).catch(error => console.error('Error fetching photos:', error));
 
-        // Fetch and display appointments
+      
         fetch('/admin/appointments')
             .then(response => response.json())
             .then(appointments => {
@@ -190,7 +190,7 @@
                                 },
                                 body: JSON.stringify({ appointment_id: appointment.id })
                             }).then(() => {
-                                // Remove the appointment from the table
+                               
                                 tr.remove();
                             }).catch(error => console.error('Error freeing appointment slot:', error));
                         }
