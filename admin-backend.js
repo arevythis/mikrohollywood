@@ -4,18 +4,18 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const { Pool } = require('pg'); // Assuming you're using PostgreSQL
-const cron = require('node-cron'); // Import node-cron
+const { Pool } = require('pg');
+const cron = require('node-cron'); 
 require('dotenv').config();
 
 const app = express();
-const PORT = 5000; // Ensure this is the correct port
+const PORT = 5000; 
 
-// Use environment variables for admin credentials
+
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'adminpassword';
 
-// Set up the PostgreSQL connection pool using individual environment variables
+
 const pool = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
@@ -24,32 +24,32 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
-// Middleware setup
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from 'public' directory
-app.use('/img', express.static(path.join(__dirname, 'img'))); // Serve images from 'img' directory
+app.use(express.static(path.join(__dirname, 'public'))); 
+app.use('/img', express.static(path.join(__dirname, 'img'))); 
 app.use(session({
     secret: 'your_secret_key',
     resave: false,
     saveUninitialized: true,
 }));
 
-// Configure multer for file uploads
+
 const storage = multer.diskStorage({
-    destination: path.join(__dirname, 'img'), // Ensure this directory exists
+    destination: path.join(__dirname, 'img'),
     filename: (req, file, cb) => {
         cb(null, file.originalname);
     }
 });
 const upload = multer({ storage: storage });
 
-// Admin login route
+
 app.get('/admin/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin_login.html'));
 });
 
-// Handle admin login
+
 app.post('/admin/login', (req, res) => {
     const { username, password } = req.body;
     console.log(`Login attempt with username: ${username} and password: ${password}`);
@@ -63,7 +63,7 @@ app.post('/admin/login', (req, res) => {
     }
 });
 
-// Admin dashboard route
+
 app.get('/admin', (req, res) => {
     if (!req.session.admin) {
         console.log('Unauthorized access attempt to admin dashboard.');
@@ -72,13 +72,13 @@ app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin_dashboard.html'));
 });
 
-// Logout route
+
 app.get('/admin/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/admin/login');
 });
 
-// Add photo route
+
 app.post('/admin/add_photo', upload.single('photo'), (req, res) => {
     if (!req.session.admin) {
         return res.redirect('/admin/login');
@@ -86,7 +86,6 @@ app.post('/admin/add_photo', upload.single('photo'), (req, res) => {
     res.redirect('/admin');
 });
 
-// Delete photo route
 app.post('/admin/delete_photo', (req, res) => {
     if (!req.session.admin) {
         return res.redirect('/admin/login');
@@ -98,7 +97,7 @@ app.post('/admin/delete_photo', (req, res) => {
     res.redirect('/admin');
 });
 
-// Free appointment slot route
+
 app.post('/admin/free_appointment_slot', async (req, res) => {
     if (!req.session.admin) {
         return res.redirect('/admin/login');
@@ -116,7 +115,7 @@ app.post('/admin/free_appointment_slot', async (req, res) => {
     }
 });
 
-// Endpoint to get all photos
+
 app.get('/admin/photos', (req, res) => {
     if (!req.session.admin) {
         return res.status(403).json({ error: 'Unauthorized' });
@@ -133,7 +132,7 @@ app.get('/admin/photos', (req, res) => {
     }
 });
 
-// Endpoint to get all appointments
+
 app.get('/admin/appointments', async (req, res) => {
     if (!req.session.admin) {
         return res.status(403).json({ error: 'Unauthorized' });
@@ -147,11 +146,11 @@ app.get('/admin/appointments', async (req, res) => {
     }
 });
 
-// Schedule a task to delete expired appointments every hour
+
 cron.schedule('* * * * *', async () => {
     console.log('Running scheduled task to delete expired appointments');
     try {
-        // Get current date and time
+     
         const now = new Date();
         const currentDate = now.toISOString().split('T')[0];
         const currentTime = now.toTimeString().split(' ')[0];
