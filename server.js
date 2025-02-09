@@ -10,13 +10,13 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Middleware
+
 app.use(cors());
 app.use(bodyParser.json());
 
-// API Routes
 
-/** 📌 Get list of images */
+
+
 app.get("/img-list", (req, res) => {
   const imagesDir = path.join(__dirname, 'img');
   console.log(`Reading directory: ${imagesDir}`);
@@ -31,13 +31,13 @@ app.get("/img-list", (req, res) => {
   });
 });
 
-// Serve static files from the "public" directory
+
 app.use(express.static('public'));
 
-// Serve static files from the "img" directory
+
 app.use('/img', express.static('img'));
 
-// PostgreSQL Connection
+
 const pool = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
@@ -46,7 +46,7 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
-// Nodemailer Configuration
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -55,7 +55,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Function to send confirmation email to the user
 const sendConfirmationEmail = async (to, appointmentDate, appointmentTime) => {
   const cancelUrl = `http://localhost:5000/cancel.html?email=${encodeURIComponent(to)}`;
   const mailOptions = {
@@ -77,7 +76,7 @@ const sendConfirmationEmail = async (to, appointmentDate, appointmentTime) => {
   }
 };
 
-// Function to send admin notification email
+
 const sendAdminEmail = async (name, phone, appointmentDate, appointmentTime, userEmail) => {
   const adminEmail = process.env.ADMIN_EMAIL;
   const mailOptions = {
@@ -101,7 +100,7 @@ const sendAdminEmail = async (name, phone, appointmentDate, appointmentTime, use
   }
 };
 
-/** 📌 Book an appointment */
+
 app.post("/appointments", async (req, res) => {
   const { user_id, name, phone, email, appointment_date, appointment_time } = req.body;
 
@@ -110,7 +109,7 @@ app.post("/appointments", async (req, res) => {
   }
 
   try {
-    // Insert appointment into the database
+   
     const result = await pool.query(
       "INSERT INTO appointments (user_id, appointment_date, appointment_time, email, status) VALUES ($1, $2, $3, $4, 'pending') RETURNING *",
       [user_id, appointment_date, appointment_time, email]
@@ -118,10 +117,10 @@ app.post("/appointments", async (req, res) => {
 
     console.log("✅ Appointment booked:", result.rows[0]);
 
-    // Send confirmation email to the user
+
     sendConfirmationEmail(email, appointment_date, appointment_time);
 
-    // Send admin notification email (NOW WITH NAME & PHONE)
+  
     sendAdminEmail(name, phone, appointment_date, appointment_time, email);
 
     res.status(200).json({ message: "Η κράτηση καταχωρήθηκε με επιτυχία!" });
@@ -131,7 +130,7 @@ app.post("/appointments", async (req, res) => {
   }
 });
 
-/** 📌 Get booked slots for a specific date */
+
 app.get("/booked-slots", async (req, res) => {
   const { date } = req.query;
 
@@ -148,7 +147,6 @@ app.get("/booked-slots", async (req, res) => {
     res.status(500).json({ error: "Αποτυχία λήψης των ήδη κλεισμένων ωρών." });
   }
 });
-/** 📌 Get appointments for a specific email */
 app.get("/appointments", async (req, res) => {
   const { email } = req.query;
   const now = new Date();
@@ -166,7 +164,7 @@ app.get("/appointments", async (req, res) => {
   }
 });
 
-/** 📌 Cancel an appointment */
+
 app.post("/cancel-appointment", async (req, res) => {
   const { id } = req.body;
 
@@ -182,7 +180,7 @@ app.post("/cancel-appointment", async (req, res) => {
     res.status(500).json({ error: "Αποτυχία ακύρωσης ραντεβού." });
   }
 });
-// Function to send cancellation link email to the user
+
 const sendCancellationLink = async (to) => {
   const cancelUrl = `http://localhost:5000/cancel.html?email=${encodeURIComponent(to)}`;
   const mailOptions = {
@@ -204,7 +202,7 @@ const sendCancellationLink = async (to) => {
   }
 };
 
-// Endpoint to handle sending cancellation link email
+
 app.post("/send-cancel-link", async (req, res) => {
   const { email } = req.body;
 
@@ -221,7 +219,7 @@ app.post("/send-cancel-link", async (req, res) => {
   }
 });
 
-// Start Server
+
 app.listen(port, () => {
   console.log(`🚀 Server is running on port ${port}`);
 });
