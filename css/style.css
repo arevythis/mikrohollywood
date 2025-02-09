@@ -1060,13 +1060,13 @@ a:focus {
 
 /* Available time slot */
 .contact .contact-form .time-slot.available {
-    background-color: #28a745;
+    background-color: #116424;
     color: #fff;
 }
 
 /* Unavailable time slot */
 .contact .contact-form .time-slot.unavailable {
-    background-color: #dc3545;
+    background-color: #6b171f;
     color: #fff;
     cursor: not-allowed;
 }
