@@ -146,6 +146,20 @@ app.get('/admin/appointments', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+// Endpoint to close a specific day
+app.post("/admin/close_day", async (req, res) => {
+    const { date } = req.body;
+    if (!date) {
+      return res.status(400).json({ error: 'Η ημερομηνία είναι υποχρεωτική.' });
+    }
+    try {
+      await pool.query('INSERT INTO closed_days (date) VALUES ($1) ON CONFLICT DO NOTHING', [date]);
+      res.status(200).json({ message: `Η ημέρα ${date} έχει κλείσει.` });
+    } catch (error) {
+      console.error('❌ Error closing the day:', error);
+      res.status(500).json({ error: 'Αποτυχία κλεισίματος της ημέρας.' });
+    }
+  });
 
 // Schedule a task to delete expired appointments every hour
 cron.schedule('* * * * *', async () => {

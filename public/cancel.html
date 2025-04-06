@@ -123,7 +123,7 @@
             <tbody id="appointments"></tbody>
         </table>
         <div class="button-container">
-            <a href="http://127.0.0.1:3000/index.html" class="hero-btn">Επιστροφή</a>
+            <a href="http://127.0.0.1:3001/index.html" class="hero-btn">Επιστροφή</a>
         </div>
     </div>
 
@@ -179,7 +179,12 @@
                             }
 
                             alert("Το ραντεβού ακυρώθηκε με επιτυχία!");
-                            location.reload();
+
+
+localStorage.setItem("refreshAppointments", "true");
+
+
+window.location.href = "http://127.0.0.1:3000/index.html";
                         } catch (error) {
                             console.error("Error cancelling appointment:", error);
                             alert("Παρουσιάστηκε σφάλμα κατά την ακύρωση του ραντεβού.");

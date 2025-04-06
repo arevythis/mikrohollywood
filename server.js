@@ -10,13 +10,13 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Middleware
+
 app.use(cors());
 app.use(bodyParser.json());
 
-// API Routes
 
-/** 📌 Get list of images */
+
+
 app.get("/img-list", (req, res) => {
   const imagesDir = path.join(__dirname, 'img');
   console.log(`Reading directory: ${imagesDir}`);
@@ -31,13 +31,13 @@ app.get("/img-list", (req, res) => {
   });
 });
 
-// Serve static files from the "public" directory
+
 app.use(express.static('public'));
 
-// Serve static files from the "img" directory
+
 app.use('/img', express.static('img'));
 
-// PostgreSQL Connection
+
 const pool = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
@@ -46,7 +46,7 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
-// Nodemailer Configuration
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -55,7 +55,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Function to send confirmation email to the user
 const sendConfirmationEmail = async (to, appointmentDate, appointmentTime) => {
   const cancelUrl = `http://localhost:5000/cancel.html?email=${encodeURIComponent(to)}`;
   const mailOptions = {
@@ -77,7 +76,7 @@ const sendConfirmationEmail = async (to, appointmentDate, appointmentTime) => {
   }
 };
 
-// Function to send admin notification email
+
 const sendAdminEmail = async (name, phone, appointmentDate, appointmentTime, userEmail) => {
   const adminEmail = process.env.ADMIN_EMAIL;
   const mailOptions = {
@@ -101,7 +100,7 @@ const sendAdminEmail = async (name, phone, appointmentDate, appointmentTime, use
   }
 };
 
-/** 📌 Book an appointment */
+
 app.post("/appointments", async (req, res) => {
   const { user_id, name, phone, email, appointment_date, appointment_time } = req.body;
 
@@ -110,7 +109,7 @@ app.post("/appointments", async (req, res) => {
   }
 
   try {
-    // Insert appointment into the database
+   
     const result = await pool.query(
       "INSERT INTO appointments (user_id, appointment_date, appointment_time, email, status) VALUES ($1, $2, $3, $4, 'pending') RETURNING *",
       [user_id, appointment_date, appointment_time, email]
@@ -118,10 +117,10 @@ app.post("/appointments", async (req, res) => {
 
     console.log("✅ Appointment booked:", result.rows[0]);
 
-    // Send confirmation email to the user
+
     sendConfirmationEmail(email, appointment_date, appointment_time);
 
-    // Send admin notification email (NOW WITH NAME & PHONE)
+  
     sendAdminEmail(name, phone, appointment_date, appointment_time, email);
 
     res.status(200).json({ message: "Η κράτηση καταχωρήθηκε με επιτυχία!" });
@@ -131,13 +130,13 @@ app.post("/appointments", async (req, res) => {
   }
 });
 
-/** 📌 Get booked slots for a specific date */
+
 app.get("/booked-slots", async (req, res) => {
   const { date } = req.query;
 
   try {
     const result = await pool.query(
-      "SELECT appointment_time FROM appointments WHERE appointment_date = $1",
+      "SELECT appointment_time FROM appointments WHERE appointment_date = $1 AND status = 'pending'",
       [date]
     );
 
@@ -148,7 +147,6 @@ app.get("/booked-slots", async (req, res) => {
     res.status(500).json({ error: "Αποτυχία λήψης των ήδη κλεισμένων ωρών." });
   }
 });
-/** 📌 Get appointments for a specific email */
 app.get("/appointments", async (req, res) => {
   const { email } = req.query;
   const now = new Date();
@@ -166,23 +164,64 @@ app.get("/appointments", async (req, res) => {
   }
 });
 
-/** 📌 Cancel an appointment */
+
 app.post("/cancel-appointment", async (req, res) => {
   const { id } = req.body;
 
   try {
-    await pool.query(
-      "UPDATE appointments SET status = 'cancelled' WHERE id = $1",
+    // Cancel the appointment
+    const result = await pool.query(
+      "UPDATE appointments SET status = 'cancelled' WHERE id = $1 RETURNING appointment_date, appointment_time",
       [id]
     );
 
+    if (result.rowCount === 0) {
+      console.error(`Appointment with ID ${id} not found`);
+      return res.status(404).json({ error: "Το ραντεβού δεν βρέθηκε." });
+    }
+
+    // Get the appointment date and time
+    const { appointment_date, appointment_time } = result.rows[0];
+
+    // Add detailed logs for the date and time values
+    console.log(`Attempting to remove slot: ${appointment_date} at ${appointment_time}`);
+
+    // Make sure the appointment_time is in the correct format (HH:MM)
+    const formattedTime = appointment_time.substr(0, 5);  // Ensure it's in HH:MM format
+
+    console.log(`Formatted time: ${formattedTime}`);
+
+    // Attempt to delete from booked_slots
+    try {
+      await pool.query(
+        "DELETE FROM booked_slots WHERE appointment_date = $1 AND appointment_time = $2",
+        [appointment_date, formattedTime]
+      );
+      console.log(`Successfully removed slot for ${appointment_date} at ${formattedTime}`);
+    } catch (err) {
+      console.error("Error removing from booked_slots:", err);
+      return res.status(500).json({ error: "Αποτυχία αφαίρεσης από την λίστα των κλεισμένων ωρών." });
+    }
+
     res.status(200).json({ message: "Το ραντεβού ακυρώθηκε με επιτυχία!" });
   } catch (err) {
-    console.error("❌ Error cancelling appointment:", err);
+    console.error("Error cancelling appointment:", err);
     res.status(500).json({ error: "Αποτυχία ακύρωσης ραντεβού." });
   }
 });
-// Function to send cancellation link email to the user
+
+app.get("/available-appointments", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM appointments WHERE status = 'pending'"
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching available appointments:", error);
+    res.status(500).json({ error: "Failed to fetch available appointments" });
+  }
+});
+
 const sendCancellationLink = async (to) => {
   const cancelUrl = `http://localhost:5000/cancel.html?email=${encodeURIComponent(to)}`;
   const mailOptions = {
@@ -204,7 +243,7 @@ const sendCancellationLink = async (to) => {
   }
 };
 
-// Endpoint to handle sending cancellation link email
+
 app.post("/send-cancel-link", async (req, res) => {
   const { email } = req.body;
 
@@ -220,8 +259,36 @@ app.post("/send-cancel-link", async (req, res) => {
     res.status(500).json({ error: "Αποτυχία αποστολής του συνδέσμου ακύρωσης." });
   }
 });
+/** 📌 Fetch closed days */
+app.get("/closed_days", async (req, res) => {
+  try {
+    const result = await pool.query('SELECT date FROM closed_days');
+    res.json(result.rows.map(row => row.date));
+  } catch (error) {
+    console.error('Error fetching closed days:', error);
+    res.status(500).json({ error: 'Error fetching closed days' });
+  }
+});
+app.get("/services", async (req, res) => {
+  const services = [
+    { name: 'ΚΟΥΡΕΜΑ ΑΝΔΡΙΚΟ', price: 10 },
+    { name: 'ΚΟΥΡΕΜΑ ΜΑΖΙ ΓΕΝΙΑ,ΜΟΥΣΙΑ', price: 13 },
+    { name: 'ΚΟΥΡΕΜΑ ΠΑΙΔΙΚΟ ΕΩΣ 10 ΕΤΩΝ', price: 8 },
+    { name: 'ΚΟΥΡΕΜΑ ΗΛΙΚΙΩΜΕΝΩΝ', price: 8 },
+    { name: 'ΦΡΕΣΚΑΡΙΣΜΑ ΜΟΥΣΙΑ,ΓΕΝΙΑ', price: 5 },
+    { name: 'ΦΡΕΣΚΑΡΙΣΜΑ ΑΥΧΕΝΑ, ΦΑΒΟΡΙΤΕΣ', price: 3 },
+    { name: 'ΛΟΥΣΙΜΟ', price: 2 },
+    { name: 'ΛΟΥΣΙΜΟ ΧΤΕΝΙΣΜΑ', price: 3 },
+    { name: 'ΒΑΦΗ ΜΑΛΛΙΩΝ', price: 20 },
+    { name: 'ΒΑΦΗ ΓΕΝΕΙΑΔΑΣ', price: 8 },
+    { name: 'ΘΕΡΑΠΕΙΕΣ ΜΑΛΛΙΩΝ (ΒΟΤΟΧ, ΕΝΥΔΑΤΩΣΗΣ, ΤΡΙΧΟΠΤΩΣΗΣ)', price: 10 },
+    { name: 'ΠΕΡΙΠΟΙΗΣΗ ΠΡΟΣΩΠΟΥ BLACK MASK', price: 8 },
+    { name: 'ΑΠΟΤΡΙΧΩΣΗ ΜΕ ΚΕΡΙ', price: 3 }
+  ];
 
-// Start Server
+  res.json(services);
+});
+
 app.listen(port, () => {
   console.log(`🚀 Server is running on port ${port}`);
 });
